@@ -60,6 +60,7 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
 
     private void bindViewHolder(MoviesViewHolder holder, int position, MovieInfo info) {
         holder.tv_column_item.setText(info.title);
+        holder.tv_movie_score.setText(info.rating.average==0?"暂无评分":info.rating.average+"");
         if (info.images != null) {
             Glide.with(mContext).load(info.images.large).placeholder(R.drawable.ic_placeholder).into(holder.iv_column_item);
         }
@@ -82,6 +83,8 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         TextView tv_column_item;
         @Bind(R.id.cv_columns_item)
         CardView cv_columns_item;
+        @Bind(R.id.tv_movie_score)
+        TextView tv_movie_score;
 
         public MoviesViewHolder(View itemView) {
             super(itemView);

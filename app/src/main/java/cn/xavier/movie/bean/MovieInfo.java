@@ -13,6 +13,7 @@ import java.util.List;
 public class MovieInfo implements Parcelable {
     public String id;
     public ImagesInfo images;
+    public RatingInfo rating;
     public String title;
 
     @Override
@@ -25,6 +26,7 @@ public class MovieInfo implements Parcelable {
         dest.writeString(this.id);
         dest.writeParcelable(this.images, flags);
         dest.writeString(this.title);
+        dest.writeParcelable(this.rating,flags);
     }
 
     public MovieInfo() {
@@ -34,6 +36,7 @@ public class MovieInfo implements Parcelable {
         this.id = in.readString();
         this.images = in.readParcelable(ImagesInfo.class.getClassLoader());
         this.title = in.readString();
+        this.rating=in.readParcelable(RatingInfo.class.getClassLoader());
     }
 
     public static final Creator<MovieInfo> CREATOR = new Creator<MovieInfo>() {

@@ -1,13 +1,12 @@
 package cn.xavier.movie.network;
 
-import android.util.TimeUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import cn.xavier.base.utils.NetUtil;
 import cn.xavier.movie.App;
+import cn.xavier.movie.bean.BingImagesInfo;
 import cn.xavier.movie.bean.MoviesList;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
@@ -29,17 +28,32 @@ public class RetrofitManager {
     private static final long CACHE_STALE_LONG = 60 * 60 * 24 * 7;
     public static final long CACHE_STALE_SHORT = 60;
     private static final String BASE_DOUBAN_URL = "https://api.douban.com/v2/movie/";
+    private static final String BASE_BING_URL="http://www.bing.com/";
     public static final String CACHE_CONTROL_AGE = "Cache-Control: public, max-age=";
     private static OkHttpClient mOkHttpClient;
-    private final MovieService mMovieService;
+    private MovieService mMovieService;
+    private  BingService mBingService;
 
     public static RetrofitManager builder() {
         return new RetrofitManager();
     }
+    public static RetrofitManager builderExtr(){
+        return new RetrofitManager(NetConstant.BING);
+    }
 
+    private RetrofitManager(int source){
+        initOkHttpClient();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_BING_URL)
+                .client(mOkHttpClient)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        mBingService = retrofit.create(BingService.class);
+    }
     private RetrofitManager() {
         initOkHttpClient();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_DOUBAN_URL)
                 .client(mOkHttpClient)
@@ -99,5 +113,8 @@ public class RetrofitManager {
 
     public Observable<MoviesList> getLatestMovie() {
         return mMovieService.getLatestMovies();
+    }
+    public Observable<BingImagesInfo> getBingPic(){
+        return mBingService.getBingPic("js","0","1","zh-CN");
     }
 }

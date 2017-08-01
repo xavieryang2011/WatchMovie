@@ -1,6 +1,7 @@
 package cn.xavier.movie.network;
 
 
+import cn.xavier.movie.bean.ImagesInfo;
 import cn.xavier.movie.bean.MoviesList;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
