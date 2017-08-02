@@ -134,7 +134,7 @@ public class MoviesListFragment extends BaseFragment implements PullToRefreshVie
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_news_list;
+        return R.layout.fragment_movies_list;
     }
     public static MoviesListFragment newInstance(int position, int scroll, MoviesListAdapter adapter, String curDate) {
         Bundle bundle = new Bundle();

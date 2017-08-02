@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import cn.xavier.base.utils.NetUtil;
 import cn.xavier.movie.App;
 import cn.xavier.movie.bean.BingImagesInfo;
+import cn.xavier.movie.bean.MovieDetailInfo;
+import cn.xavier.movie.bean.MovieInfo;
 import cn.xavier.movie.bean.MoviesList;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
@@ -30,6 +32,8 @@ public class RetrofitManager {
     private static final String BASE_DOUBAN_URL = "https://api.douban.com/v2/movie/";
     private static final String BASE_BING_URL="http://www.bing.com/";
     public static final String CACHE_CONTROL_AGE = "Cache-Control: public, max-age=";
+    private static final String API_KEY ="0b2bdeda43b5688921839c8ecb20399b" ;
+    private static final String MOVIE_CITY="北京";
     private static OkHttpClient mOkHttpClient;
     private MovieService mMovieService;
     private  BingService mBingService;
@@ -116,5 +120,9 @@ public class RetrofitManager {
     }
     public Observable<BingImagesInfo> getBingPic(){
         return mBingService.getBingPic("js","0","1","zh-CN");
+    }
+
+    public Observable<MovieDetailInfo> getMovieDetail(String id) {
+        return mMovieService.getMovieDetail(id,API_KEY,MOVIE_CITY);
     }
 }

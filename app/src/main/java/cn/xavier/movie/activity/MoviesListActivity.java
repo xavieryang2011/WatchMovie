@@ -1,8 +1,6 @@
 package cn.xavier.movie.activity;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,7 +36,7 @@ public class MoviesListActivity extends BaseActivity {
     }
     @Override
     protected int getLayoutId() {
-        return R.layout.layout_news_list;
+        return R.layout.layout_movies_list;
     }
 
 }

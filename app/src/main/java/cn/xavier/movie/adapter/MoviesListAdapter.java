@@ -1,6 +1,7 @@
 package cn.xavier.movie.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +17,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.xavier.base.utils.PrefUtil;
+import cn.xavier.movie.App;
 import cn.xavier.movie.R;
+import cn.xavier.movie.activity.MovieDetailActivity;
 import cn.xavier.movie.bean.MovieInfo;
 import cn.xavier.movie.db.dao.NewDao;
 
@@ -58,12 +61,18 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         bindViewHolder(holder, position, movieInfo);
     }
 
-    private void bindViewHolder(MoviesViewHolder holder, int position, MovieInfo info) {
+    private void bindViewHolder(MoviesViewHolder holder, int position, final MovieInfo info) {
         holder.tv_column_item.setText(info.title);
         holder.tv_movie_score.setText(info.rating.average==0?"暂无评分":info.rating.average+"");
         if (info.images != null) {
             Glide.with(mContext).load(info.images.large).placeholder(R.drawable.ic_placeholder).into(holder.iv_column_item);
         }
+        holder.cv_columns_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MovieDetailActivity.start(mContext,info);
+            }
+        });
     }
 
     @Override

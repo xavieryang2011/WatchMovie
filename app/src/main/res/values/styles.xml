@@ -11,4 +11,9 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="movie_detail_text">
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textSize">14dp</item>
+    </style>
 </resources>

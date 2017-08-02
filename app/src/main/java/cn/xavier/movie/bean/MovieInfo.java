@@ -16,6 +16,7 @@ public class MovieInfo implements Parcelable {
     public RatingInfo rating;
     public String title;
 
+
     @Override
     public int describeContents() {
         return 0;
