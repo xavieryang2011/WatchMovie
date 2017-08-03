@@ -5,6 +5,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -21,8 +22,11 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.xavier.base.ui.BaseFragment;
+import cn.xavier.base.utils.L;
 import cn.xavier.movie.R;
 import cn.xavier.movie.activity.MovieDetailActivity;
+import cn.xavier.movie.adapter.CommentsListAdapter;
+import cn.xavier.movie.bean.CommentInfo;
 import cn.xavier.movie.bean.MovieDetailInfo;
 import cn.xavier.movie.bean.MovieInfo;
 import cn.xavier.movie.bean.PersonInfo;
@@ -73,6 +77,7 @@ public class MovieDetailFragment extends BaseFragment {
     CollapsingToolbarLayout mClptMovieDetail;
 
     private MovieInfo mMovieInfo;
+    private CommentsListAdapter mCommentAdapter;
 
     @Override
     protected void afterCreate(Bundle bundle) {
@@ -80,7 +85,7 @@ public class MovieDetailFragment extends BaseFragment {
             mMovieInfo = getArguments().getParcelable(MovieDetailActivity.MOVIE_INFO);
         }
         setHasOptionsMenu(true);
-        initView();
+        init();
         loadDate(mMovieInfo.id);
     }
 
@@ -94,7 +99,7 @@ public class MovieDetailFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initView() {
+    private void init() {
         AppCompatActivity activity=(AppCompatActivity)getActivity();
         activity.setSupportActionBar(mToolbar);
 
@@ -104,6 +109,11 @@ public class MovieDetailFragment extends BaseFragment {
 //        }
         mClptMovieDetail.setTitleEnabled(true);
 
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity());
+        mRclMovieDetailComments.setLayoutManager(linearLayoutManager);
+        mRclMovieDetailComments.setHasFixedSize(true);
+        mCommentAdapter=new CommentsListAdapter(getActivity(),new ArrayList<CommentInfo>());
+        mRclMovieDetailComments.setAdapter(mCommentAdapter);
     }
 
     private void loadDate(String id) {
@@ -119,6 +129,7 @@ public class MovieDetailFragment extends BaseFragment {
                 .subscribe(new Action1<MovieDetailInfo>() {
                     @Override
                     public void call(MovieDetailInfo info) {
+                        L.d(info.popular_comments.toString());
                         mClpbLoading.setVisibility(View.GONE);
                         setData(info);
                     }
@@ -126,6 +137,7 @@ public class MovieDetailFragment extends BaseFragment {
                     @Override
                     public void call(Throwable throwable) {
                         mTvError.setVisibility(View.VISIBLE);
+                        mClpbLoading.setVisibility(View.GONE);
                     }
                 });
     }
@@ -155,6 +167,12 @@ public class MovieDetailFragment extends BaseFragment {
         mTvSummary.setText(info.summary);
         mTvComments.setText("评论区" + "(" + info.comments_count + ")" + ":");
         mTvMovieType.setText("类型：" + getStringFromArray(info.genres));
+
+        setCommontsData(info.popular_comments);
+    }
+
+    private void setCommontsData(ArrayList<CommentInfo> comments) {
+        mCommentAdapter.changeData(comments);
     }
 
     private String getStringFromArray(ArrayList<String> items) {
