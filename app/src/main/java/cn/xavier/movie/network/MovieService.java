@@ -17,7 +17,8 @@ import rx.Observable;
 public interface MovieService {
     @Headers(RetrofitManager.CACHE_CONTROL_AGE+RetrofitManager.CACHE_STALE_SHORT)
     @GET("in_theaters")
-    Observable<MoviesList> getLatestMovies();
+    Observable<MoviesList> getLatestMovies(@Query("start") int start,
+                                           @Query("count") int count);
 
     @Headers(RetrofitManager.CACHE_CONTROL_AGE+RetrofitManager.CACHE_STALE_SHORT)
     @GET("subject/{id}")

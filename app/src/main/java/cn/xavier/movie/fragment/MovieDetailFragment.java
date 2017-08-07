@@ -2,16 +2,14 @@ package cn.xavier.movie.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +18,6 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import cn.xavier.base.ui.BaseFragment;
 import cn.xavier.base.utils.L;
 import cn.xavier.movie.R;
@@ -75,9 +72,12 @@ public class MovieDetailFragment extends BaseFragment {
     TextView mTvLoadEmpty;
     @Bind(R.id.clpt_movie_detail)
     CollapsingToolbarLayout mClptMovieDetail;
+    @Bind(R.id.tv_content)
+    TextView mTvContent;
 
     private MovieInfo mMovieInfo;
     private CommentsListAdapter mCommentAdapter;
+    private Snackbar mWrongSnackbar;
 
     @Override
     protected void afterCreate(Bundle bundle) {
@@ -114,6 +114,15 @@ public class MovieDetailFragment extends BaseFragment {
         mRclMovieDetailComments.setHasFixedSize(true);
         mCommentAdapter=new CommentsListAdapter(getActivity(),new ArrayList<CommentInfo>());
         mRclMovieDetailComments.setAdapter(mCommentAdapter);
+
+        mWrongSnackbar=Snackbar.make(mRclMovieDetailComments,"加载失败，请刷新重试",Snackbar.LENGTH_INDEFINITE)
+                .setAction("刷新", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadDate(mMovieInfo.id);
+                    }
+                });
+
     }
 
     private void loadDate(String id) {
@@ -131,6 +140,7 @@ public class MovieDetailFragment extends BaseFragment {
                     public void call(MovieDetailInfo info) {
                         L.d(info.popular_comments.toString());
                         mClpbLoading.setVisibility(View.GONE);
+                        mTvError.setVisibility(View.GONE);
                         setData(info);
                     }
                 }, new Action1<Throwable>() {
@@ -138,11 +148,13 @@ public class MovieDetailFragment extends BaseFragment {
                     public void call(Throwable throwable) {
                         mTvError.setVisibility(View.VISIBLE);
                         mClpbLoading.setVisibility(View.GONE);
+                        mWrongSnackbar.show();
                     }
                 });
     }
 
     private void setData(MovieDetailInfo info) {
+        mTvContent.setText("剧情介绍：");
         Glide.with(getActivity()).load(info.images.large).placeholder(R.drawable.ic_placeholder)
                 .into(mIvMovieIcon);
         String strActors = "演员：";
@@ -177,6 +189,8 @@ public class MovieDetailFragment extends BaseFragment {
 
     private String getStringFromArray(ArrayList<String> items) {
         String result = "";
+
+        if(items==null||items.size()==0) return result ;
         for (String item :
                 items) {
             result += item + "/";

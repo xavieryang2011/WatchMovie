@@ -34,6 +34,7 @@ public class RetrofitManager {
     public static final String CACHE_CONTROL_AGE = "Cache-Control: public, max-age=";
     private static final String API_KEY ="0b2bdeda43b5688921839c8ecb20399b" ;
     private static final String MOVIE_CITY="北京";
+    public static final int MOVIE_PAGE_COUNT = 10;
     private static OkHttpClient mOkHttpClient;
     private MovieService mMovieService;
     private  BingService mBingService;
@@ -115,8 +116,8 @@ public class RetrofitManager {
         }
     };
 
-    public Observable<MoviesList> getLatestMovie() {
-        return mMovieService.getLatestMovies();
+    public Observable<MoviesList> getLatestMovie(int start) {
+        return mMovieService.getLatestMovies(start,MOVIE_PAGE_COUNT);
     }
     public Observable<BingImagesInfo> getBingPic(){
         return mBingService.getBingPic("js","0","1","zh-CN");

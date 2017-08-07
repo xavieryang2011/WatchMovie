@@ -1,7 +1,6 @@
 package cn.xavier.movie.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +15,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.xavier.base.utils.PrefUtil;
-import cn.xavier.movie.App;
 import cn.xavier.movie.R;
 import cn.xavier.movie.activity.MovieDetailActivity;
 import cn.xavier.movie.bean.MovieInfo;
@@ -31,13 +28,11 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
 
     private static final int ITEM_COLUMNS = 0;
     private final Context mContext;
-    private final boolean isNight;
     private List<MovieInfo> mMoviesList;
     private final NewDao newDao;
 
     public MoviesListAdapter(Context context, List<MovieInfo> moviesList) {
         this.mContext = context;
-        this.isNight = PrefUtil.isNight(context);
         this.mMoviesList = moviesList;
         this.newDao = new NewDao(context);
     }
@@ -84,7 +79,14 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         mMoviesList = movies;
         notifyDataSetChanged();
     }
-
+    public void addData(List<MovieInfo> moviesList){
+        if(mMoviesList==null){
+            mMoviesList=moviesList;
+        }else {
+            mMoviesList.addAll(moviesList);;
+        }
+        notifyDataSetChanged();
+    }
     public class MoviesViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_column_item)
         ImageView iv_column_item;
