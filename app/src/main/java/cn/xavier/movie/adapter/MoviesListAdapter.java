@@ -87,6 +87,15 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         }
         notifyDataSetChanged();
     }
+
+    public void setList(List<MovieInfo> moviesList) {
+        this.mMoviesList=moviesList;
+    }
+
+    public void setAnim(boolean b) {
+
+    }
+
     public class MoviesViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_column_item)
         ImageView iv_column_item;

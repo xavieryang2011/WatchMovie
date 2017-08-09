@@ -6,4 +6,10 @@
     <color name="colorAccent">#FF4081</color>
     <color name="white">#FFFFFF</color>
 
+    <!--日期主题-->
+    <!--Toolbar字体颜色  -->
+    <color name="toolbar_Text_Color_Day">#DDFFFFFF</color>
+
+    <!--夜晚主题-->
+    <color name="toolbar_Text_Color_Night">#3F51B5</color>
 </resources>

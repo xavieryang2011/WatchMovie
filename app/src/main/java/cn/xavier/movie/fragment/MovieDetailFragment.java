@@ -1,13 +1,16 @@
 package cn.xavier.movie.fragment;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import cn.xavier.base.ui.BaseFragment;
 import cn.xavier.base.utils.L;
+import cn.xavier.base.utils.PrefUtil;
 import cn.xavier.movie.R;
 import cn.xavier.movie.activity.MovieDetailActivity;
 import cn.xavier.movie.adapter.CommentsListAdapter;
@@ -107,13 +111,15 @@ public class MovieDetailFragment extends BaseFragment {
 //        if (actionBar != null) {
 //            actionBar.setDisplayHomeAsUpEnabled(true);
 //        }
-        mClptMovieDetail.setTitleEnabled(true);
+
+        setTitleBar();
 
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity());
         mRclMovieDetailComments.setLayoutManager(linearLayoutManager);
         mRclMovieDetailComments.setHasFixedSize(true);
         mCommentAdapter=new CommentsListAdapter(getActivity(),new ArrayList<CommentInfo>());
         mRclMovieDetailComments.setAdapter(mCommentAdapter);
+        mRclMovieDetailComments.setNestedScrollingEnabled(false);
 
         mWrongSnackbar=Snackbar.make(mRclMovieDetailComments,"加载失败，请刷新重试",Snackbar.LENGTH_INDEFINITE)
                 .setAction("刷新", new View.OnClickListener() {
@@ -123,6 +129,23 @@ public class MovieDetailFragment extends BaseFragment {
                     }
                 });
 
+    }
+
+    private void setTitleBar() {
+        mClptMovieDetail.setTitle(mMovieInfo.title);
+        mClptMovieDetail.setTitleEnabled(true);
+
+//        TypedValue typedValue=new TypedValue();
+//        getActivity().getTheme().resolveAttribute(android.R.attr.,typedValue,true);
+//        int[] attribute=new int[]{android.R.attr.textColor};
+//        TypedArray array=getActivity().obtainStyledAttributes(typedValue.resourceId,attribute);
+//        int textColor=array.getColor(0,getResources().getColor(R.color.white));
+//        array.recycle();
+        if(PrefUtil.isNight(getActivity())) {
+            mClptMovieDetail.setCollapsedTitleTextColor(getResources().getColor(R.color.toolbar_Text_Color_Night));
+        }else {
+            mClptMovieDetail.setCollapsedTitleTextColor(getResources().getColor(R.color.toolbar_Text_Color_Day));
+        }
     }
 
     private void loadDate(String id) {

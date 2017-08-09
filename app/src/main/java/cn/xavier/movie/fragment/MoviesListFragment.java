@@ -63,7 +63,7 @@ public class MoviesListFragment extends BaseFragment implements PullToRefreshVie
     private Snackbar mWrongSnackbar;
     private Snackbar mMoreWrongSnackbar;
     private int mCurPage;
-
+    private boolean move;
 
     @Override
     protected void afterCreate(Bundle bundle) {
@@ -189,6 +189,14 @@ public class MoviesListFragment extends BaseFragment implements PullToRefreshVie
             }
         };
         rcl_column_list.addOnScrollListener(mAutoLoadListner);
+        rcl_column_list.addOnScrollListener(new RecylerViewListener());
+
+        if(mExtraAdapter!=null){
+            mMoviesListAdapter.setAnim(false);
+            mMoviesListAdapter.setList(mExtraAdapter.getMoviesList());
+            mMoviesListAdapter.notifyDataSetChanged();
+            move();
+        }
 
         mMoreWrongSnackbar=Snackbar.make(rcl_column_list,"加载更多的失败，点击重试！",Snackbar.LENGTH_INDEFINITE)
                 .setAction("重试", new View.OnClickListener() {
@@ -204,7 +212,29 @@ public class MoviesListFragment extends BaseFragment implements PullToRefreshVie
                         loadLatestMovie();
                     }
                 });
-    };
+    }
+
+    private void move() {
+        if (mPosition < 0 || mPosition >= rcl_column_list.getAdapter().getItemCount()) {
+            return;
+        }
+        int firstItem = mLineralayoutManager.findFirstVisibleItemPosition();
+        int lastItem = mLineralayoutManager.findLastVisibleItemPosition();
+
+        if (mPosition <= firstItem) {
+            rcl_column_list.scrollToPosition(mPosition);
+            move = true;
+        } else if (mPosition <= lastItem) {
+            int top = rcl_column_list.getChildAt(mPosition - firstItem).getTop() - mScroll;
+            rcl_column_list.scrollBy(0, top);
+            if (mOnRecyclerViewCreated != null) {
+                mOnRecyclerViewCreated.RecyclerViewCreated();
+            }
+        } else {
+            rcl_column_list.scrollToPosition(mPosition);
+            move = true;
+        }
+    }
 
     @Override
     protected int getLayoutId() {
@@ -231,8 +261,34 @@ public class MoviesListFragment extends BaseFragment implements PullToRefreshVie
         loadLatestMovie();
     }
 
+    public RecyclerView getRecyclerView() {
+        return rcl_column_list;
+    }
+
+    public MoviesListAdapter getAdapter() {
+        return mMoviesListAdapter;
+    }
+
 
     public interface OnRecyclerViewCreated {
-        Void RecyclerViewCreated();
+        void RecyclerViewCreated();
+    }
+
+    private class RecylerViewListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if(move){
+                move=false;
+                int n=mPosition-mLineralayoutManager.findFirstVisibleItemPosition();
+                if(0<=n&&n<rcl_column_list.getChildCount()){
+                    int top=rcl_column_list.getChildAt(n).getTop()-mScroll;
+                    rcl_column_list.smoothScrollBy(0,top);
+                }
+                if(mOnRecyclerViewCreated!=null){
+                    mOnRecyclerViewCreated.RecyclerViewCreated();
+                }
+            }
+        }
     }
 }

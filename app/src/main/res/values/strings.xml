@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">看电影</string>
+    <string name="main_change_theme">切换主题</string>
+    <string name="about">关于</string>
 </resources>
